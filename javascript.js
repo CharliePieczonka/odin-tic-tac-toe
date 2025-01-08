@@ -66,37 +66,66 @@ const gameBoard = (function () {
         return false;
     }
 
-    return { getGameBoard, updateGameBoard, hasXWon, hasOWon };
+    return { getGameBoard, updateGameBoard, clearGameBoard, hasXWon, hasOWon, isTie };
 })();
 
-function createPlayer (player, value, turn) {
-    const name = player;
-    const character = value;
-    const order = turn;
+function createPlayer (name, marker) {
 
     let getName = () => { return name }
-    let getCharacter = () => { return character }
-    let getOrder = () => { return order }
+    let getCharacter = () => { return marker }
 
-    return { getName, getCharacter, getOrder };
+    return { getName, getCharacter };
 }
 
 const gameController = (function () {
-    let turn = 0;
-    let player1, player2;
+    let player1, player2, current;
 
     const startGame = (name1, name2) => {
-        player1 = createPlayer(name1, "X", 0);
-        player2 = createPlayer(name2, "0", 1);
-
+        player1 = createPlayer(name1, "X");
+        player2 = createPlayer(name2, "0");
+        current = player1;
         //displayController.updateMessage(player1.getName() + "'s turn");
     }
 
-    const playRound = () => {
+    const playRound = (row, column) => {
+        gameBoard.updateGameBoard(current.getMarker, row, column);
+        
+        if(gameBoard.hasXWon() || gameBoard.hasOWon) {
+            finishGame(current.getName());
+        }
+        else if(gameBoard.isTie()) {
+            finishGame("tie");
+        }
+        else {
+            //TODO: update game board display
 
+            if (current === player1) {
+                current = player2;
+            }
+            else {
+                current = player1;
+            }
+        }
     }
 
-    return {startGame, playRound }
+    const finishGame = (winner) => {
+        if(winner == "tie") {
+            // TODO: write message
+        }
+        else {
+            // TODO: write message
+        }
+
+        //TODO: lock game board
+
+        gameBoard.clearGameBoard();
+    }
+
+    const getCurrentPlayer = () => {
+        return current;
+    }
+
+    return {startGame, playRound, getCurrentPlayer }
 
 })();
 
@@ -113,12 +142,21 @@ const displayController = (function () {
             message.style.color = "red";
         }
         else {
+            admin.children[0].innerHTML = player1.value + " is X";
+            admin.children[1].innerHTML = player2.value + " is O";
             message.textContent = player1.value + "'s turn";
             message.style.color = "black";
             startReset.textContent = "Reset Game";
             gameController.startGame(player1.value, player2.value);
         }
     });
+
+    // TODO: render board
+
+    // TODO: listen for cell clicks, send info to boardController
+
+    // TODO: lock board
+
 
     const updateMessage = (msg) => {
         message.textContent = msg;
