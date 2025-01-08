@@ -8,6 +8,46 @@
     <script src="javascript.js" defer></script>
 </head>
 <body>
+    <div class="header">
+        <p class="title">Tic Tac Toe!</p>
+    </div>
+    <div class="messages">
+        <p id="message">Enter the player names and start!</p>
+    </div>
+    <div class="contentContainer">
+        <div class="contentInner">
+            <div class="admin">
+                <div class="playerInfo">
+                    <label for="player1">Player 1:</label>
+                    <input type="text" id="player1">
+                </div>
+                <div class="playerInfo">
+                    <label for="player2">Player 2:</label>
+                    <input type="text" id="player2">
+                </div>
+                <button id="startReset">Start Game</button>
+            </div>
+            <div class="gameBoard">
+                <div class="row" id="row-1">
+                    <div class="cell" id="cell-1-1">X</div>
+                    <div class="cell" id="cell-1-2">O</div>
+                    <div class="cell" id="cell-1-3">X</div>
+                </div>
+                <div class="row" id="row-2">
+                    <div class="cell" id="cell-2-1">X</div>
+                    <div class="cell" id="cell-2-2">X</div>
+                    <div class="cell" id="cell-2-3">O</div>
+                </div>
+                <div class="row" id="row-3">
+                    <div class="cell" id="cell-3-1">O</div>
+                    <div class="cell" id="cell-3-2">O</div>
+                    <div class="cell" id="cell-3-3">X</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
     
 </body>
 </html>

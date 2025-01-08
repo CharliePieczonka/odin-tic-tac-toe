@@ -1,0 +1,72 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+text-align: center;
+padding-top: 20px;
+}
+
+.messages {
+    text-align: center;
+    padding-top: 70px;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.contentContainer {
+    display: grid;
+    justify-content: center;
+}
+
+.contentInner {
+    display: flex;
+    gap: 30px;
+}
+
+.admin {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input {
+    padding: 2px;
+}
+
+button {
+    height: 30px;
+}
+
+.gameBoard {
+    display: flex;
+    flex-direction: column;
+}
+
+.row { 
+    display: flex;
+}
+
+.cell {
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell:hover {
+    background-color: lightgray;
+}
+
+
+

@@ -1,5 +1,6 @@
 const gameBoard = (function () {
-    let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
+    //let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
+    let gameBoard = [["X", "O", "O"], ["X", "X", "O"], ["O", "X", "O"]];
 
     let getGameBoard = () => { return gameBoard }
 
@@ -66,9 +67,9 @@ const gameBoard = (function () {
     }
 
     return { getGameBoard, updateGameBoard, hasXWon, hasOWon };
-  })();
+})();
 
-  function createPlayer (player, value, turn) {
+function createPlayer (player, value, turn) {
     const name = player;
     const character = value;
     const order = turn;
@@ -78,4 +79,50 @@ const gameBoard = (function () {
     let getOrder = () => { return order }
 
     return { getName, getCharacter, getOrder };
-  }
+}
+
+const gameController = (function () {
+    let turn = 0;
+    let player1, player2;
+
+    const startGame = (name1, name2) => {
+        player1 = createPlayer(name1, "X", 0);
+        player2 = createPlayer(name2, "0", 1);
+
+        //displayController.updateMessage(player1.getName() + "'s turn");
+    }
+
+    const playRound = () => {
+
+    }
+
+    return {startGame, playRound }
+
+})();
+
+const displayController = (function () {
+    let startReset = document.querySelector("#startReset");
+    let player1 = document.querySelector("#player1");
+    let player2 = document.querySelector("#player2");
+    let message = document.querySelector("#message");
+    let admin = document.querySelector(".admin");
+
+    startReset.addEventListener("click", () => {
+        if(player1.value == "" || player2.value == ""){
+            message.textContent = "Please enter player names before starting!";
+            message.style.color = "red";
+        }
+        else {
+            message.textContent = player1.value + "'s turn";
+            message.style.color = "black";
+            startReset.textContent = "Reset Game";
+            gameController.startGame(player1.value, player2.value);
+        }
+    });
+
+    const updateMessage = (msg) => {
+        message.textContent = msg;
+    }
+
+    return { updateMessage }
+})();
