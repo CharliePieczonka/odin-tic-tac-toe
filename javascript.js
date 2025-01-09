@@ -1,11 +1,23 @@
 const gameBoard = (function () {
-    //let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
-    let gameBoard = [["X", "O", "O"], ["X", "X", "O"], ["O", "X", "O"]];
+    let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
+    let locked = true;
+    //let gameBoard = [["X", "O", "O"], ["X", "X", "O"], ["O", "X", "O"]];
 
     let getGameBoard = () => { return gameBoard }
 
     let updateGameBoard = (value, row, column) => {
         gameBoard[row][column] = value;
+    }
+
+    let isLocked = () => { return locked }
+
+    let toggleLocked = () => { 
+        if(locked) {
+            locked = false;
+        }
+        else {
+            locked = true;
+        }
     }
 
     let clearGameBoard = () => {
@@ -72,9 +84,9 @@ const gameBoard = (function () {
 function createPlayer (name, marker) {
 
     let getName = () => { return name }
-    let getCharacter = () => { return marker }
+    let getMarker = () => { return marker }
 
-    return { getName, getCharacter };
+    return { getName, getMarker };
 }
 
 const gameController = (function () {
@@ -88,17 +100,17 @@ const gameController = (function () {
     }
 
     const playRound = (row, column) => {
-        gameBoard.updateGameBoard(current.getMarker, row, column);
-        
-        if(gameBoard.hasXWon() || gameBoard.hasOWon) {
+        gameBoard.updateGameBoard(current.getMarker(), row, column);
+        displayController.renderBoard();
+
+        if(gameBoard.hasXWon() || gameBoard.hasOWon()) {
             finishGame(current.getName());
         }
+
         else if(gameBoard.isTie()) {
             finishGame("tie");
         }
         else {
-            //TODO: update game board display
-
             if (current === player1) {
                 current = player2;
             }
@@ -111,21 +123,24 @@ const gameController = (function () {
     const finishGame = (winner) => {
         if(winner == "tie") {
             // TODO: write message
+            displayController.updateMessage("The game has ended in a draw.");
         }
         else {
             // TODO: write message
+            displayController.updateMessage(current.getName() + " has won!");
         }
 
         //TODO: lock game board
 
-        gameBoard.clearGameBoard();
+
+        //gameBoard.clearGameBoard();
     }
 
     const getCurrentPlayer = () => {
         return current;
     }
 
-    return {startGame, playRound, getCurrentPlayer }
+    return { startGame, playRound, getCurrentPlayer }
 
 })();
 
@@ -135,6 +150,8 @@ const displayController = (function () {
     let player2 = document.querySelector("#player2");
     let message = document.querySelector("#message");
     let admin = document.querySelector(".admin");
+    let board = document.querySelector(".gameBoard");
+    let cells = board.querySelectorAll(".cell");
 
     startReset.addEventListener("click", () => {
         if(player1.value == "" || player2.value == ""){
@@ -151,9 +168,17 @@ const displayController = (function () {
         }
     });
 
-    // TODO: render board
-
     // TODO: listen for cell clicks, send info to boardController
+    cells.forEach(cell => cell.addEventListener("click", () => {
+        gameController.playRound(cell.parentElement.getAttribute("row"), cell.getAttribute("col"));
+    }));
+
+    // TODO: render board
+    const renderBoard = () => {
+        cells.forEach(cell => {
+            cell.textContent = gameBoard.getGameBoard()[cell.parentElement.getAttribute("row")][cell.getAttribute("col")];
+        })
+    }
 
     // TODO: lock board
 
@@ -162,5 +187,5 @@ const displayController = (function () {
         message.textContent = msg;
     }
 
-    return { updateMessage }
+    return { updateMessage, renderBoard }
 })();
