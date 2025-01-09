@@ -23,17 +23,15 @@ padding-top: 20px;
 .contentContainer {
     display: grid;
     justify-content: center;
-}
-
-.contentInner {
-    display: flex;
-    gap: 30px;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .admin {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    grid-column: 1 / 2;
+    justify-self: right;
 }
 
 input {
@@ -47,6 +45,8 @@ button {
 .gameBoard {
     display: flex;
     flex-direction: column;
+    grid-column: 2 / 3;
+    justify-self: center;
 }
 
 .row { 
