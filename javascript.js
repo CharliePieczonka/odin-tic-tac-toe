@@ -1,3 +1,14 @@
+function createPlayer (name, marker) {
+
+    let getName = () => { return name }
+    let getMarker = () => { return marker }
+    let setMarker = (newMarker) => {
+        marker = newMarker;
+    }
+
+    return { getName, getMarker, setMarker };
+}
+
 const gameBoard = (function () {
     let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     let locked = true;
@@ -78,16 +89,8 @@ const gameBoard = (function () {
         return false;
     }
 
-    return { getGameBoard, updateGameBoard, clearGameBoard, hasXWon, hasOWon, isTie };
+    return { getGameBoard, updateGameBoard, clearGameBoard, hasXWon, hasOWon, isTie, isLocked, toggleLocked };
 })();
-
-function createPlayer (name, marker) {
-
-    let getName = () => { return name }
-    let getMarker = () => { return marker }
-
-    return { getName, getMarker };
-}
 
 const gameController = (function () {
     let player1, player2, current;
@@ -96,26 +99,31 @@ const gameController = (function () {
         player1 = createPlayer(name1, "X");
         player2 = createPlayer(name2, "0");
         current = player1;
-        //displayController.updateMessage(player1.getName() + "'s turn");
+        displayController.updateAdmin(player1, player2);
+        gameBoard.toggleLocked();
     }
 
     const playRound = (row, column) => {
-        gameBoard.updateGameBoard(current.getMarker(), row, column);
-        displayController.renderBoard();
-
-        if(gameBoard.hasXWon() || gameBoard.hasOWon()) {
-            finishGame(current.getName());
-        }
-
-        else if(gameBoard.isTie()) {
-            finishGame("tie");
-        }
-        else {
-            if (current === player1) {
-                current = player2;
+        if(!gameBoard.isLocked() && gameBoard.getGameBoard()[row][column] === "") {
+            gameBoard.updateGameBoard(current.getMarker(), row, column);
+            displayController.renderBoard();
+    
+            if(gameBoard.hasXWon() || gameBoard.hasOWon()) {
+                finishGame(current.getName());
+            }
+    
+            else if(gameBoard.isTie()) {
+                finishGame("tie");
             }
             else {
-                current = player1;
+                if (current === player1) {
+                    current = player2;
+                }
+                else {
+                    current = player1;
+                }
+    
+                displayController.updateMessage(current.getName() + "'s turn");
             }
         }
     }
@@ -130,17 +138,33 @@ const gameController = (function () {
             displayController.updateMessage(current.getName() + " has won!");
         }
 
-        //TODO: lock game board
+        gameBoard.toggleLocked();
+    }
 
+    const resetGame = () => {
+        if(player1.getMarker() == "X") {
+            current = player2;
+            player1.setMarker("O");
+            player2.setMarker("X");
+        }
+        else {
+            current = player1;
+            player1.setMarker("X");
+            player2.setMarker("O");
+        }
 
-        //gameBoard.clearGameBoard();
+        displayController.updateMessage(current.getName() + "'s turn");
+        displayController.updateAdmin(player1, player2);
+        gameBoard.clearGameBoard();
+        gameBoard.toggleLocked();
+        displayController.renderBoard();
     }
 
     const getCurrentPlayer = () => {
         return current;
     }
 
-    return { startGame, playRound, getCurrentPlayer }
+    return { startGame, playRound, getCurrentPlayer, resetGame }
 
 })();
 
@@ -154,18 +178,20 @@ const displayController = (function () {
     let cells = board.querySelectorAll(".cell");
 
     startReset.addEventListener("click", () => {
-        if(player1.value == "" || player2.value == ""){
-            message.textContent = "Please enter player names before starting!";
-            message.style.color = "red";
+        if(startReset.textContent === "Start Game"){
+            if(player1.value != "" || player2.value != ""){
+                gameController.startGame(player1.value, player2.value);
+                
+                message.textContent = player1.value + "'s turn";
+                message.style.color = "black";
+                startReset.textContent = "Reset Game";
+                
+            }
         }
         else {
-            admin.children[0].innerHTML = player1.value + " is X";
-            admin.children[1].innerHTML = player2.value + " is O";
-            message.textContent = player1.value + "'s turn";
-            message.style.color = "black";
-            startReset.textContent = "Reset Game";
-            gameController.startGame(player1.value, player2.value);
+            gameController.resetGame();
         }
+        
     });
 
     // TODO: listen for cell clicks, send info to boardController
@@ -180,12 +206,14 @@ const displayController = (function () {
         })
     }
 
-    // TODO: lock board
-
-
     const updateMessage = (msg) => {
         message.textContent = msg;
     }
 
-    return { updateMessage, renderBoard }
+    const updateAdmin = (player1, player2) => {
+        admin.children[0].innerHTML = player1.getName() + " is " + player1.getMarker();
+        admin.children[1].innerHTML = player2.getName() + " is " + player2.getMarker();
+    }
+
+    return { updateMessage, renderBoard, updateAdmin }
 })();
