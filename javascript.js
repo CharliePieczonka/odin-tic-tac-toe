@@ -164,7 +164,11 @@ const gameController = (function () {
         displayController.updateMessage(current.getName() + "'s turn");
         displayController.updateAdmin(player1, player2);
         gameBoard.clearGameBoard();
-        gameBoard.toggleLocked();
+
+        if(gameBoard.isLocked()) {
+            gameBoard.toggleLocked();
+        }
+        
         displayController.renderBoard();
     }
 
