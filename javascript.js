@@ -82,7 +82,7 @@ const gameBoard = (function () {
     let isTie = () => {
         // if gameboard is full and neither X or O has won its a tie
         if(gameBoard[0].every(x => x != "") && gameBoard[1].every(x => x != "") && gameBoard[2].every(x => x != "")
-        && hasXWon == false && hasOWon == false) { 
+        && hasXWon() == false && hasOWon() == false) { 
             return true;
         }
         
