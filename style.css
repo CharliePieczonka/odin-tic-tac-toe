@@ -13,6 +13,7 @@ padding-top: 20px;
     text-align: center;
     padding-top: 70px;
     margin-bottom: 30px;
+    font-size: 20px;
 }
 
 .title {
@@ -40,13 +41,17 @@ input {
 
 button {
     height: 30px;
+    width: 100px;
+}
+
+.gameBoardContainer {
+    grid-column: 2 / 3;
+    justify-self: center;
 }
 
 .gameBoard {
     display: flex;
-    flex-direction: column;
-    grid-column: 2 / 3;
-    justify-self: center;
+    flex-direction: column; 
 }
 
 .row { 
@@ -58,6 +63,7 @@ button {
     width: 100px;
     border: 1px solid black;
     border-collapse: collapse;
+    font-size: 38px;
     
     display: flex;
     justify-content: center;
@@ -68,5 +74,13 @@ button {
     background-color: lightgray;
 }
 
+.scoreContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
 
-
+.score { 
+    font-size: 20px;
+}
