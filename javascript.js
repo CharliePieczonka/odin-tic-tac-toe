@@ -1,5 +1,4 @@
 function createPlayer (name, marker) {
-
     let getName = () => { return name }
     let getMarker = () => { return marker }
     let setMarker = (newMarker) => {
@@ -12,12 +11,15 @@ function createPlayer (name, marker) {
 const gameBoard = (function () {
     let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     let locked = true;
-    //let gameBoard = [["X", "O", "O"], ["X", "X", "O"], ["O", "X", "O"]];
 
     let getGameBoard = () => { return gameBoard }
 
     let updateGameBoard = (value, row, column) => {
         gameBoard[row][column] = value;
+    }
+
+    let clearGameBoard = () => {
+        gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
 
     let isLocked = () => { return locked }
@@ -29,10 +31,6 @@ const gameBoard = (function () {
         else {
             locked = true;
         }
-    }
-
-    let clearGameBoard = () => {
-        gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
 
     let hasXWon = () => {
@@ -99,6 +97,7 @@ const gameController = (function () {
         player1 = createPlayer(name1, "X");
         player2 = createPlayer(name2, "0");
         current = player1;
+        displayController.updateMessage(current.getName() + "'s turn");
         displayController.updateAdmin(player1, player2);
         gameBoard.toggleLocked();
     }
@@ -130,11 +129,9 @@ const gameController = (function () {
 
     const finishGame = (winner) => {
         if(winner == "tie") {
-            // TODO: write message
             displayController.updateMessage("The game has ended in a draw.");
         }
         else {
-            // TODO: write message
             displayController.updateMessage(current.getName() + " has won!");
         }
 
@@ -160,11 +157,7 @@ const gameController = (function () {
         displayController.renderBoard();
     }
 
-    const getCurrentPlayer = () => {
-        return current;
-    }
-
-    return { startGame, playRound, getCurrentPlayer, resetGame }
+    return { startGame, playRound, resetGame }
 
 })();
 
@@ -181,25 +174,18 @@ const displayController = (function () {
         if(startReset.textContent === "Start Game"){
             if(player1.value != "" || player2.value != ""){
                 gameController.startGame(player1.value, player2.value);
-                
-                message.textContent = player1.value + "'s turn";
-                message.style.color = "black";
-                startReset.textContent = "Reset Game";
-                
+                startReset.textContent = "Reset Game";      
             }
         }
         else {
             gameController.resetGame();
         }
-        
     });
 
-    // TODO: listen for cell clicks, send info to boardController
     cells.forEach(cell => cell.addEventListener("click", () => {
         gameController.playRound(cell.parentElement.getAttribute("row"), cell.getAttribute("col"));
     }));
 
-    // TODO: render board
     const renderBoard = () => {
         cells.forEach(cell => {
             cell.textContent = gameBoard.getGameBoard()[cell.parentElement.getAttribute("row")][cell.getAttribute("col")];
