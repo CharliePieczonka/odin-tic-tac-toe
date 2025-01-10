@@ -1,18 +1,26 @@
 function createPlayer (name, marker) {
-    let getName = () => { return name }
-    let getMarker = () => { return marker }
+    let score = 0;
+
+    let getName = () => { return name; }
+
+    let getMarker = () => { return marker; }
+
     let setMarker = (newMarker) => {
         marker = newMarker;
     }
 
-    return { getName, getMarker, setMarker };
+    let getScore = () => { return score; }
+
+    let giveScore = () => { score++; }
+
+    return { getName, getMarker, setMarker, getScore, giveScore };
 }
 
 const gameBoard = (function () {
     let gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     let locked = true;
 
-    let getGameBoard = () => { return gameBoard }
+    let getGameBoard = () => { return gameBoard; }
 
     let updateGameBoard = (value, row, column) => {
         gameBoard[row][column] = value;
@@ -22,7 +30,7 @@ const gameBoard = (function () {
         gameBoard = [["", "", ""], ["", "", ""], ["", "", ""]];
     }
 
-    let isLocked = () => { return locked }
+    let isLocked = () => { return locked; }
 
     let toggleLocked = () => { 
         if(locked) {
@@ -99,6 +107,7 @@ const gameController = (function () {
         current = player1;
         displayController.updateMessage(current.getName() + "'s turn");
         displayController.updateAdmin(player1, player2);
+        displayController.renderScores(player1, player2);
         gameBoard.toggleLocked();
     }
 
@@ -133,6 +142,8 @@ const gameController = (function () {
         }
         else {
             displayController.updateMessage(current.getName() + " has won!");
+            current.giveScore();
+            displayController.renderScores(player1, player2);
         }
 
         gameBoard.toggleLocked();
@@ -169,6 +180,8 @@ const displayController = (function () {
     let admin = document.querySelector(".admin");
     let board = document.querySelector(".gameBoard");
     let cells = board.querySelectorAll(".cell");
+    let p1Score = document.querySelector("#score-1");
+    let p2Score = document.querySelector("#score-2");
 
     startReset.addEventListener("click", () => {
         if(startReset.textContent === "Start Game"){
@@ -201,5 +214,10 @@ const displayController = (function () {
         admin.children[1].innerHTML = player2.getName() + " is " + player2.getMarker();
     }
 
-    return { updateMessage, renderBoard, updateAdmin }
+    const renderScores  = (player1, player2) => {
+        p1Score.textContent = player1.getName() + ": " + player1.getScore();
+        p2Score.textContent = player2.getName() + ": " + player2.getScore();
+    }
+
+    return { updateMessage, renderBoard, updateAdmin, renderScores }
 })();
